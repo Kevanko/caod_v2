@@ -1,44 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "../libraries/bstree.h"
 #include "../libraries/hashtab.h"
+#include "../libraries/header.h"
 
-#define MAX_KEYS 200000
-#define MAX_KEY_LENGTH 20
+struct listnode *hashtab[HASHTAB_SIZE];
 
+int main() {
+  struct bstree *tree, *node;
 
-int main()
-{
-    char key[MAX_KEY_LENGTH];
-    FILE *f = fopen("Keys.txt", "r");
+  FILE *file = fopen("Keys.txt", "r");
+  if (!file)
+    return 1;
 
-    for(int i = 0; i < MAX_KEYS && !feof(f); i++){
-        fgets(key, MAX_KEY_LENGTH, f);
-        key[strcspn(key, "\n")] = '\0';
-        //printf("%s\n", key);
-    } 
+  char words[MAX_KEYS - 1][MAX_SIZE];
 
-    fclose(f);
+  for (int i = 0; i < MAX_KEYS; i++) {
+    fgets(words[i], MAX_KEYS, file);
+  }
 
-    printf("<==BSTREE==>\n");
+  fclose(file);
+  printf("BSTREE\n");
+  tree = bstree_create(words[0], 0);
+  for (int i = 1; i < MAX_KEYS; i++) {
+    bstree_add(tree, words[i], i);
+    if (i % 10000 == 0) {
+      //char *word = words[getrand(0, i)];
+      double time = wtime();
+      node = bstree_min(tree);
+      time = wtime() - time;
+      printf("%d\t\t%lf\t%d\n", i, time, node->value);
+    }
+  }
+  bstree_free(tree);
 
-    struct bstree *tree, *node1;
-    tree = bstree_create("Koala", 12);
-    bstree_add(tree, "Flamingo", 1);
-    bstree_add(tree, "Fox", 14);
-    node1 = bstree_lookup(tree, "Fox");
-    printf("Found value for key %s: %d\n", node1->key, node1->value);
-    node1 = bstree_min(tree);
-    printf("Minimal key: %s, value: %d\n", node1->key, node1->value);
+  struct listnode *node2;
 
-    printf("<==HASHTAB==>\n");
+  hashtab_init(hashtab);
+  printf("HASHTAB\n");
+  tree = bstree_create(words[0], 0);
+  for (int i = 1; i < MAX_KEYS; i++) {
+    hashtab_add(hashtab, words[i], i);
+    if (i % 10000 == 0) {
+      char *word = words[rand() % i];
+      double time = wtime();
+      node2 = hashtab_lookup(hashtab, word);
+      time = wtime() - time;
+      printf("%d\t\t%lf\t%d\n", i, time, node2->value);
+    }
+  }
 
-    struct listnode *node2;
-    hashtab_init(hashtab);
-    hashtab_add(hashtab, "Ocelot", 17);
-    hashtab_add(hashtab, "Flamingo", 4);
-    hashtab_add(hashtab, "Fox", 14);
-    node2 = hashtab_lookup(hashtab, "Flamingo");
-    if (node2 != NULL)
-    printf("Node: %s, %d\n", node2->key, node2->value);
-
-    return 0;
+  return 0;
 }
