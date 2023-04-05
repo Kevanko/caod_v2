@@ -1,7 +1,10 @@
 #pragma once
 
-#define MAX_KEYS 200001
-#define MAX_SIZE 35
+enum{
+  Hashtab_Size = 5051,
+  MaxKeys = 200000,
+  MaxKeyLenght = 25
+};
 
 int getrand(int min, int max);
 double wtime();

@@ -4,12 +4,14 @@
 #include <string.h>
 
 #include "../libraries/hashtab.h"
+#include "../libraries/header.h"
+
 // KRHash
 unsigned int hashtab_hash(char *key) {
   unsigned int h = 0, hash_mul = 31;
   while (*key)
     h = h * hash_mul + (unsigned int)*key++;
-  return h % HASHTAB_SIZE;
+  return h % Hashtab_Size;
 }
 
 // DJBHash
@@ -23,12 +25,12 @@ unsigned int JenkinsHash(char *s) {
   h += (h << 3);
   h ^= (h >> 11);
   h += (h << 15);
-  return h % HASHTAB_SIZE;
+  return h % Hashtab_Size;
 }
 
 void hashtab_init(struct listnode **hashtab) {
   int i;
-  for (i = 0; i < HASHTAB_SIZE; i++)
+  for (i = 0; i < Hashtab_Size; i++)
     hashtab[i] = NULL;
 }
 void hashtab_add(struct listnode **hashtab, char *key, int value) {
@@ -71,7 +73,7 @@ void hashtab_delete(struct listnode **hashtab, char *key) {
 }
 
 void free_table(struct listnode **table) {
-    for (int i = 0; i < HASHTAB_SIZE; i++) {
+    for (int i = 0; i < Hashtab_Size; i++) {
         struct listnode *current = table[i];
         while (current != NULL) {
             struct listnode *temp = current;

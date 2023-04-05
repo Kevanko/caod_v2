@@ -1,14 +1,11 @@
 #pragma once
 
-#define HASHTAB_SIZE 200000
-
 struct listnode {
   char *key;
   int value;
 
   struct listnode *next;
 };
-
 
 unsigned int JenkinsHash(char *s);
 unsigned int hashtab_hash(char *key);
