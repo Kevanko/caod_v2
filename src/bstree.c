@@ -132,7 +132,7 @@ struct bstree *bstree_delete(struct bstree *tree, char *key) {
 }
 
 void bstree_free(struct bstree *tree) {
-  size_t capacity = 1024;
+  size_t capacity = 2000000;
   size_t top = 0;
   struct bstree **stack =
       (struct bstree **)malloc(capacity * sizeof(struct bstree *));
