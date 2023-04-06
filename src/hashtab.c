@@ -46,6 +46,32 @@ void hashtab_add(struct listnode **hashtab, char *key, int value) {
     hashtab[index] = node;
   }
 }
+
+void hashtab_add_DJB(struct listnode **hashtab, char *key, int value) {
+  struct listnode *node;
+
+  int index = JenkinsHash(key);
+  node = (struct listnode *)malloc(sizeof(*node));
+
+  if (node != NULL) {
+    node->key = key;
+    node->value = value;
+    node->next = hashtab[index];
+    hashtab[index] = node;
+  }
+}
+
+struct listnode *hashtab_lookup_DJB(struct listnode **hashtab, char *key) {
+  struct listnode *node;
+
+  int index = JenkinsHash(key);
+  for (node = hashtab[index]; node != NULL; node = node->next) {
+    if (0 == strcmp(node->key, key))
+      return node;
+  }
+  return NULL;
+}
+
 struct listnode *hashtab_lookup(struct listnode **hashtab, char *key) {
   struct listnode *node;
 
@@ -72,15 +98,23 @@ void hashtab_delete(struct listnode **hashtab, char *key) {
   }
 }
 
-void free_table(struct listnode **table) {
-    for (int i = 0; i < Hashtab_Size; i++) {
-        struct listnode *current = table[i];
-        while (current != NULL) {
-            struct listnode *temp = current;
-            current = current->next;
-            free(temp->key);
-            free(temp);
-        }
+int get_collisions(struct listnode **hashtab){
+  int count = 0;
+  for(int i = 0; i < Hashtab_Size; i++){
+    for(struct listnode *j = !hashtab[i] ? NULL : hashtab[i]->next; j != NULL; j = j->next){
+      count += 1;
     }
-    free(table);
+  }
+  return count;
+}
+
+void free_table(struct listnode **hashtab) {
+  for (int i = 0; i < Hashtab_Size; i++) {
+    struct listnode *current = hashtab[i];
+    while (current != NULL) {
+      struct listnode *temp = current;
+      current = current->next;
+      free(temp);
+    }
+  }
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 enum{
-  Hashtab_Size = 5051,
+  Hashtab_Size = 200000,
   MaxKeys = 200000,
   MaxKeyLenght = 25
 };

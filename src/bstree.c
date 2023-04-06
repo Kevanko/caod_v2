@@ -38,26 +38,6 @@ void bstree_add(struct bstree *tree, char *key, int value) {
     parent->right = node;
 }
 
-void bstree_add_right(struct bstree *tree, char *key, int value) {
-  if (tree == NULL)
-    return;
-  struct bstree *parent, *node;
-  while (tree != NULL) {
-    parent = tree;
-    if (strcmp(key, tree->key) < 0)
-      tree = tree->right;
-    else if (strcmp(key, tree->key) > 0)
-      tree = tree->right;
-    else
-      return;
-  }
-  node = bstree_create(key, value);
-  if (strcmp(key, parent->key) < 0)
-    parent->right = node;
-  else
-    parent->right = node;
-}
-
 struct bstree *bstree_lookup(struct bstree *tree, char *key) {
   while (tree != NULL) {
     if (strcmp(key, tree->key) == 0)
