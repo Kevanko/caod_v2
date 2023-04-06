@@ -8,15 +8,15 @@
 #include "../libraries/hashtab.h"
 #include "../libraries/header.h"
 
-struct listnode *hashtab[Hashtab_Size];
-char words[MaxKeys][MaxKeyLenght];
-
 int main() {
-  struct bstree *tree, *node;
-  struct listnode *hash, *node_hash;
+  struct listnode *hashtab[Hashtab_Size];
+  char words[MaxKeys][MaxKeyLenght];
 
-  double time_bstree = 0.0, time_hash = 0.0;
+  struct bstree *tree_good, *tree_bad, *node_good, *node_bad;
+
+  double time_good = 0.0, time_bad = 0.0;
   clock_t begin, end;
+
   FILE *file = fopen("Keys.txt", "r");
   if (!file) {
     return 1;
@@ -27,32 +27,31 @@ int main() {
   }
   fclose(file);
 
-  printf("#\ttree\t\thash\t\t\tkey\t\tkey_tree\t\tkey_hash\tvalue\n");
-  hashtab_init(hashtab);
-  hashtab_add(hashtab, words[0], 0);
-  tree = bstree_create(words[0], 0);
+  printf("#\tgood\t\tbad\t\t\tkey_good\tkey_bad\t\tvalue_good\tvalue_bad\n");
+  tree_good = bstree_create(words[0], 0);
+  tree_bad = bstree_create(words[0], 0);
+
   for (int i = 1; i < MaxKeys; i++) {
-    bstree_add(tree, words[i], i);
-    hashtab_add(hashtab, words[i], i);
+    bstree_add(tree_good, words[i], i);
+    bstree_add_right(tree_bad, words[i], i);
     if ((i + 1) % 10000 == 0) {
-      char *rand_key = words[getrand(0, i)];
       // bstree
       begin = clock();
-      node = bstree_lookup(tree, rand_key);
+      node_good = bstree_max(tree_good);
       end = clock();
-      time_bstree = (double)(end - begin) / CLOCKS_PER_SEC;
+      time_good = (double)(end - begin) / CLOCKS_PER_SEC;
 
       // hastab
       begin = clock();
-      node_hash = hashtab_lookup(hashtab, rand_key);
+      node_bad = bstree_max(tree_bad);
       end = clock();
-      time_hash = (double)(end - begin) / CLOCKS_PER_SEC;
+      time_bad = (double)(end - begin) / CLOCKS_PER_SEC;
 
-      printf("%d\t%f\t%f %20.25s %20.25s %20.25s\t\t%d\n",i+1, time_bstree, time_hash,
-             rand_key, node->key, node_hash->key, node->value);
+      printf("%d\t%f\t%f %20.25s %20.25s \t\t%d\t\t%d\n",i+1, time_good, time_bad,
+             node_good->key, node_bad->key, node_good->value, node_bad->value);
     }
   }
-  bstree_free(tree);
-  free_table(hashtab);
+  bstree_free(tree_good);
+  bstree_free(tree_bad);
   return 0;
 }
