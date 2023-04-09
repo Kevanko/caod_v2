@@ -1,9 +1,9 @@
 #pragma once
 
 enum{
-  Hashtab_Size = 200000,
+  Hashtab_Size = 50000,
   MaxKeys = 200000,
-  MaxKeyLenght = 25
+  MaxKeyLenght = 30
 };
 
 int getrand(int min, int max);

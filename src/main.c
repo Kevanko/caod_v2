@@ -7,10 +7,9 @@
 #include "../libraries/bstree.h"
 #include "../libraries/hashtab.h"
 #include "../libraries/header.h"
-
-int main() {
-  struct listnode *hashtab[Hashtab_Size];
   char words[MaxKeys][MaxKeyLenght];
+int main() {
+
 
   struct bstree *tree_good, *tree_bad, *node_good, *node_bad;
 
@@ -27,7 +26,7 @@ int main() {
   }
   fclose(file);
 
-  printf("#\tgood\t\tbad\t\t\tkey_good\tkey_bad\t\tvalue_good\tvalue_bad\n");
+  printf("#\tgood\t\tbad\t\t\tkey_good\t\t\tkey_bad\n");
   tree_good = bstree_create(words[0], 0);
   tree_bad = bstree_create(words[0], 0);
 
@@ -47,8 +46,8 @@ int main() {
       end = clock();
       time_bad = (double)(end - begin) / CLOCKS_PER_SEC;
 
-      printf("%d\t%f\t%f %20.25s %20.25s \t\t%d\t\t%d\n",i+1, time_good, time_bad,
-             node_good->key, node_bad->key, node_good->value, node_bad->value);
+      printf("%d\t%f\t%f\t%30.30s \t%30.30s\n",i+1, time_good, time_bad,
+             node_good->key, node_bad->key);
     }
   }
   bstree_free(tree_good);
