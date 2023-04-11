@@ -98,10 +98,11 @@ void hashtab_delete(struct listnode **hashtab, char *key) {
   }
 }
 
-int get_collisions(struct listnode **hashtab){
+int get_collisions(struct listnode **hashtab) {
   int count = 0;
-  for(int i = 0; i < Hashtab_Size; i++){
-    for(struct listnode *j = !hashtab[i] ? NULL : hashtab[i]->next; j != NULL; j = j->next){
+  for (int i = 0; i < Hashtab_Size; i++) {
+    for (struct listnode *j = !hashtab[i] ? NULL : hashtab[i]->next; j != NULL;
+         j = j->next) {
       count += 1;
     }
   }

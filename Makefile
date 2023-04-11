@@ -1,7 +1,7 @@
 APP_NAME = main
 CC = gcc
 
-CFLAGS =
+CFLAGS = -g -O0
 
 SRC_DIR = src
 APP_SOURCES = $(shell find $(SRC_DIR) -name '*.c')
