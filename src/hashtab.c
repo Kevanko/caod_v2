@@ -15,7 +15,7 @@ unsigned int hashtab_hash(char *key) {
 }
 
 // DJBHash
-unsigned int JenkinsHash(char *s) {
+unsigned int Jenkins_hash(char *s) {
   unsigned int h = 0;
   while (*s) {
     h += (unsigned int)*s++;
@@ -26,6 +26,14 @@ unsigned int JenkinsHash(char *s) {
   h ^= (h >> 11);
   h += (h << 15);
   return h % Hashtab_Size;
+}
+
+unsigned long DJB_hash(char *str) {
+  unsigned long hash = 5381;
+  int c;
+  while ((c = *str++))
+    hash = ((hash << 5) + hash) + c;
+  return hash % Hashtab_Size;
 }
 
 void hashtab_init(struct listnode **hashtab) {
@@ -46,11 +54,11 @@ void hashtab_add(struct listnode **hashtab, char *key, int value) {
     hashtab[index] = node;
   }
 }
-
+/*/-------------------------------DJB---------------------------------------/*/
 void hashtab_add_DJB(struct listnode **hashtab, char *key, int value) {
   struct listnode *node;
 
-  int index = JenkinsHash(key);
+  int index = DJB_hash(key);
   node = (struct listnode *)malloc(sizeof(*node));
 
   if (node != NULL) {
@@ -64,13 +72,14 @@ void hashtab_add_DJB(struct listnode **hashtab, char *key, int value) {
 struct listnode *hashtab_lookup_DJB(struct listnode **hashtab, char *key) {
   struct listnode *node;
 
-  int index = JenkinsHash(key);
+  int index = DJB_hash(key);
   for (node = hashtab[index]; node != NULL; node = node->next) {
     if (0 == strcmp(node->key, key))
       return node;
   }
   return NULL;
 }
+/*/-------------------------------DJB---------------------------------------/*/
 
 struct listnode *hashtab_lookup(struct listnode **hashtab, char *key) {
   struct listnode *node;

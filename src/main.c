@@ -8,14 +8,15 @@
 #include "../libraries/hashtab.h"
 #include "../libraries/header.h"
 
-struct listnode *hashtab[Hashtab_Size];
+struct listnode *hashtab_KR[Hashtab_Size];
+struct listnode *hashtab_DJB[Hashtab_Size];
 char words[Max_Keys][Max_Key_Length];
 
 int main() {
 
-  struct bstree *tree, *node_tree;
-  struct listnode *hash, *node_hash;
-  double time_tree = 0.0, time_hash = 0.0;
+  struct listnode *node_KR, *node_DJB;
+  double time_KR = 0.0, time_DJB = 0.0;
+  ;
   clock_t begin, end;
 
   //---------Read-Words---------//
@@ -27,48 +28,49 @@ int main() {
   fclose(file);
   //---------Read-Words---------//
 
-  printf(FG_CYAN "\t\t\tExperiment #1 --> Bstree_Lookup vs Hashtab_Lookup <--"
+  printf(FG_CYAN "\tExperiment #6 --> Hashtab_Lookup_DJB vs Hashtab_Lookup_KP"
                  "<--\n" FG_WHITE);
 
-  print_cap(121, '-');
-  printf(FG_YELLOW "#\t" FG_CYAN "|  " FG_GREEN "time_hash\t" FG_CYAN
-                   "| " FG_RED " time_tree\t" FG_CYAN "|\t\t" FG_GREEN
-                   "key_hash\t\t" FG_CYAN "|\t\t" FG_RED "key_tree\t\t" FG_CYAN
+  print_cap(73, '-');
+  printf(FG_YELLOW "#\t" FG_CYAN "|  " FG_GREEN "time_DJB\t" FG_CYAN
+                   "| " FG_RED " time_KR\t" FG_CYAN "|  " FG_GREEN
+                   "DJB_Collis\t" FG_CYAN "|  " FG_RED "KP_Collis\t" FG_CYAN
                    "|\n" FG_WHITE);
-  print_cap(121, '-');
+  print_cap(73, '-');
 
-  hashtab_init(hashtab);
-  hashtab_add(hashtab, words[0], 0);
-  tree = bstree_create(words[0], 0);
+  hashtab_init(hashtab_KR);
+  hashtab_init(hashtab_DJB);
 
-  for (int i = 1; i < Max_Keys; i++) {
-    bstree_add(tree, words[i], i);
-    hashtab_add(hashtab, words[i], i);
+  for (int i = 0; i < Max_Keys; i++) {
+    hashtab_add(hashtab_KR, words[i], i);
+    hashtab_add_DJB(hashtab_DJB, words[i], i);
 
     if ((i + 1) % 10000 == 0) {
-      char *rand_key = words[getrand(0, i)];
-      //---------Good---------//
+      char *word = words[getrand(0, i)];
+      //---------KR---------//
       begin = clock();
-      node_tree = bstree_lookup(tree, rand_key);
+      node_KR = hashtab_lookup(hashtab_KR, word);
       end = clock();
-      time_tree = (double)(end - begin) / CLOCKS_PER_SEC;
-      //---------Good---------//
+      time_KR = (double)(end - begin) / CLOCKS_PER_SEC;
+      //---------JR---------//
 
-      //---------Bad---------//
+      //---------DJB---------//
       begin = clock();
-      node_hash = hashtab_lookup(hashtab, rand_key);
+      node_DJB = hashtab_lookup_DJB(hashtab_DJB, word);
       end = clock();
-      time_hash = (double)(end - begin) / CLOCKS_PER_SEC;
-      //---------Bad---------//
+      time_DJB = (double)(end - begin) / CLOCKS_PER_SEC;
+      //---------DJB---------//
+      int collisions_KP = get_collisions(hashtab_KR);
+      int collisions_DJB = get_collisions(hashtab_DJB);
 
       printf(FG_YELLOW "%d\t" FG_CYAN "| " FG_GREEN "%f\t" FG_CYAN "| " FG_RED
-                       "%f\t" FG_CYAN "|" FG_GREEN "%35.35s\t" FG_CYAN
-                       "|" FG_RED " %35.35s\t" FG_CYAN "|\n" FG_WHITE,
-             i + 1, time_hash, time_tree, node_hash->key, node_tree->key);
+                       "%f\t" FG_CYAN "|" FG_GREEN " %d\t\t" FG_CYAN
+                       "|" FG_RED " %d\t\t" FG_CYAN "|\n" FG_WHITE,
+             i + 1, time_DJB, time_KR, collisions_DJB, collisions_KP);
     }
   }
-  print_cap(121, '-');
-  bstree_free(tree);
-  free_table(hashtab);
+  print_cap(73, '-');
+  free_table(hashtab_KR);
+  free_table(hashtab_DJB);
   return 0;
 }
