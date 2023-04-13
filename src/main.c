@@ -28,7 +28,7 @@ int main() {
   fclose(file);
   //---------Read-Words---------//
 
-  printf(FG_CYAN "\tExperiment #6 --> Hashtab_Lookup_DJB vs Hashtab_Lookup_KP"
+  printf(FG_CYAN "\tExperiment #6 --> Hashtab_Lookup_DJB vs Hashtab_Lookup_KP "
                  "<--\n" FG_WHITE);
 
   print_cap(73, '-');
@@ -60,8 +60,8 @@ int main() {
       end = clock();
       time_DJB = (double)(end - begin) / CLOCKS_PER_SEC;
       //---------DJB---------//
-      int collisions_KP = get_collisions(hashtab_KR);
-      int collisions_DJB = get_collisions(hashtab_DJB);
+      int collisions_KP = get_collisions_v2(hashtab_KR, i + 1);
+      int collisions_DJB = get_collisions_v2(hashtab_DJB, i + 1);
 
       printf(FG_YELLOW "%d\t" FG_CYAN "| " FG_GREEN "%f\t" FG_CYAN "| " FG_RED
                        "%f\t" FG_CYAN "|" FG_GREEN " %d\t\t" FG_CYAN

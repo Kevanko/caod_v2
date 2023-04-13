@@ -14,7 +14,43 @@ unsigned int hashtab_hash(char *key) {
   return h % Hashtab_Size;
 }
 
-// DJBHash
+/*/---------FNVHash---------/*/
+unsigned int FNVHash(char* s) {
+	const unsigned int fnv_prime = 0x811C9DC5;
+	unsigned int hash = 0;
+	unsigned int i = 0;
+
+	for (i = 0; i < strlen(s); s++, i++)
+	{
+		hash *= fnv_prime;
+		hash ^= (*s);
+	}
+
+	return hash % Hashtab_Size;
+}
+
+/*/---------AddHash---------/*/
+unsigned int AddHash(char *s) {
+  unsigned int h = 0;
+  while (*s)
+    h += (unsigned int)*s++;
+  return h % Hashtab_Size;
+}
+
+/*/---------ELFHash---------/*/
+unsigned int ELFHash(char *s) {
+  unsigned int h = 0, g;
+  while (*s) {
+    h = (h << 4) + (unsigned int)*s++;
+    g = h & 0xF0000000L;
+    if (g)
+      h ^= g >> 24;
+    h &= ~g;
+  }
+  return h % Hashtab_Size;
+}
+
+/*/---------Jenkins_hash---------/*/
 unsigned int Jenkins_hash(char *s) {
   unsigned int h = 0;
   while (*s) {
@@ -27,7 +63,7 @@ unsigned int Jenkins_hash(char *s) {
   h += (h << 15);
   return h % Hashtab_Size;
 }
-
+/*/---------DJBHash---------/*/
 unsigned long DJB_hash(char *str) {
   unsigned long hash = 5381;
   int c;
@@ -116,6 +152,16 @@ int get_collisions(struct listnode **hashtab) {
     }
   }
   return count;
+}
+
+int get_collisions_v2(struct listnode **hashtab, int all) {
+  int count = 0;
+  for (int i = 0; i < Hashtab_Size; i++) {
+    if (hashtab[i] != NULL) {
+      count += 1;
+    }
+  }
+  return all - count;
 }
 
 void free_table(struct listnode **hashtab) {

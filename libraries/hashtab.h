@@ -17,3 +17,4 @@ struct listnode *hashtab_lookup_DJB(struct listnode **hashtab, char *key);
 void hashtab_delete(struct listnode **hashtab, char *key);
 void free_table(struct listnode **hashtab);
 int get_collisions(struct listnode **hashtab);
+int get_collisions_v2(struct listnode **hashtab, int all);
